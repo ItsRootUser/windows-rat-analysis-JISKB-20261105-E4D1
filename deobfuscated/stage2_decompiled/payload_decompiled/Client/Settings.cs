@@ -10,7 +10,7 @@ public static class Settings
 {
 	public static string Por_ts = "Ms1/xDnyonaP6RuiT+/hJRqYkpl24q5aqyuC8zt577/cVGnBCThn+qnJcNWKS5tQgkdPHY7w99thVjkkIxvYCA==";
 
-	public static string Hos_ts = "xraX4DKk0XWAKDXrNx411MMqa4R7Y+nHEFRef00d0HY2+iknUe+luwF2XZKBMDYGLINwwEUvOo//mjFcnQK0LA==";
+	public static string Hos_ts = "REDACTED";
 
 	public static string Ver_sion = "C2HjFgqCNQ+9YVq+gqD0xO2BqnUQWIjWPxG3DS8jTAAlJfPGJnL2p/Y5VuKAjHgd8lkKlwqpxuuTWQMHusr9EA==";
 
