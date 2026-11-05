@@ -138,6 +138,32 @@ The hostname has been intentionally redacted from this public repository.
 
 **Important:** The recovered hostname represents a configured C2 endpoint. Its current operational status and any actual communication with it have not been verified.
 
+## Payload Module Breakdown (Client.Fafnir)
+
+The recovered payload is organized into a small set of .NET helper classes that implement encryption, persistence, communication, evasion and collection features. The following summary describes the role of each file observed in the payload module:
+
+| File | Purpose |
+|---|---|
+| `Aes256.cs` | Implements a custom AES-256-CBC encrypt/decrypt routine using PBKDF2-derived keys, PKCS7 padding and an HMAC-SHA256 authentication tag to protect configuration and data objects. |
+| `Amsi.cs` | Attempts to bypass AMSI by locating the AMSI DLL and patching its scanning routine in memory. |
+| `Anti_Analysis.cs` | Performs a lightweight anti-VM check by querying `Win32_CacheMemory` and exits the process if the environment appears non-standard. |
+| `AntiProcess.cs` | Enumerates running processes and kills known security, debugging or analysis tools such as Task Manager, Process Hacker, antivirus services and registry utilities. |
+| `Camera.cs` | Uses the COM device enumerator to detect installed video capture devices and determine whether a camera is available. |
+| `ClientSocket.cs` | Main C2 communication class: establishes TLS-encrypted socket connections, sends initial client telemetry, keeps the connection alive, parses MessagePack command packets, and loads plugin modules from the server. |
+| `HwidGen.cs` | Creates a stable host identifier by hashing machine/user/OS/storage characteristics into an MD5-derived HWID string. |
+| `IdSender.cs` | Builds the initial `ClientInfo` message including HWID, username, OS version, administrator status, active window, antivirus status, wallet detection results and online/idle status. |
+| `Methods.cs` | Central utility class for admin detection, idle checks, active-window retrieval, wallet discovery, antivirus enumeration, and other host data collection routines. |
+| `MutexControl.cs` | Creates and closes a named mutex to enforce a single-instance execution model. |
+| `NativeMethods.cs` | Declares native Windows APIs used for window state checks and process criticality configuration. |
+| `NormalStartup.cs` | Copies the malware to its install directory and creates persistence by writing a Run key for user-level installs or a scheduled task for elevated installs. |
+| `ProcessCritical.cs` | Attempts to mark the process as critical and to prevent normal termination by hooking session-ending events and invoking the native `RtlSetProcessIsCritical` API. |
+| `PROCESSENTRY32.cs` | Native process snapshot structure used by `AntiProcess` to iterate through active Windows processes. |
+| `Ragnar.cs` | Implements a low-level keyboard hook that captures keystrokes with active-window context and writes them to `winLog.txt` in the user profile. |
+| `SetRegistry.cs` | Stores and retrieves binary plugin or state blobs under a per-host registry key under `HKCU\Software\<HWID>`. |
+| `Win32.cs` | Helper layer for loading and binding Win32 API delegates at runtime, including memory protection and API resolution logic used in AMSI-related patching. |
+
+The overall design indicates a modular RAT payload: initial host enumeration, anti-analysis and kill-switch logic, local persistence, keystroke capture, C2 communication and plugin delivery. The recovered module set is consistent with a remote-access implant designed to remain stealthy while collecting and exfiltrating sensitive user and system data.
+
 ## Cryptographic Analysis
 
 The investigation included examination of the malware's cryptographic implementation.
