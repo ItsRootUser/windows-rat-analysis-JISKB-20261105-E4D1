@@ -1,5 +1,7 @@
 # Windows RAT – Static Analysis & Reverse Engineering
 
+**⚠️ ONLY FOR EDUCATIONAL OR RESEARCH PURPOSES**
+
 **Independent Security Research**  
 **SK-CERT Report Reference:** `JISKB-20261105-E4D1`  
 **Analysis Date:** November 2026  
