@@ -234,7 +234,7 @@ All documented capabilities are based on analysis of the recovered code and conf
 
 This repository is intended exclusively for educational and defensive cybersecurity research.
 
-It does not distribute the original malware samples or functional payloads.
+It does distribute the original malware samples or functional payloads.
 
 Do not execute unknown malware samples on production systems. Any further dynamic analysis should be performed in a properly isolated laboratory environment.
 
