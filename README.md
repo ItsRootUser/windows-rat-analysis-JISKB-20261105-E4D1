@@ -31,9 +31,36 @@ Multiple executable components and .NET assemblies were subsequently extracted a
 
 | Stage | Description |
 |---|---|
+| Initial discovery | Identification of the VBS launcher and associated BAT execution chain |
 | Stage 1 | Obfuscated loader analysis, decryption and payload extraction |
 | Stage 2 | Loader analysis, AES decryption, GZIP decompression and in-memory assembly loading |
 | Payload | Reverse engineering of the recovered .NET RAT functionality |
+
+### Reverse Engineering and Deobfuscation Process
+
+The following steps document the technical process used to progressively recover and analyze the malware components.
+
+1. **Initial malware discovery:** Identified `Windows_Log[Random num].vbs`, a VBScript file responsible for executing the associated `Windows_Log[Random num].bat` batch script.
+
+2. **Batch script deobfuscation:** Analyzed and deobfuscated `Windows_Log[Random num].bat` using custom Python scripts to recover its underlying commands and execution logic.
+
+3. **Stage extraction:** Identified and extracted two embedded malware stages from the deobfuscated batch script using Python.
+
+4. **Stage 1 analysis:** Loaded the first-stage binary into ILSpy and decompiled it to reconstruct its .NET code and investigate its functionality.
+
+5. **Stage 2 analysis:** Decompiled the second-stage binary using ILSpy to examine its execution flow, unpacking routines and payload-handling mechanisms.
+
+6. **Payload decryption:** Identified an AES-256 encryption routine in Stage 2 and replicated the decryption process to recover the encrypted `payload.exe`.
+
+7. **Payload extraction:** Used custom Python scripts to extract additional embedded binaries and components from `payload.exe`.
+
+8. **Embedded binary analysis:** Loaded the extracted binaries into ILSpy and decompiled them to recover their underlying .NET code and identify additional obfuscation layers.
+
+9. **Final payload deobfuscation:** Analyzed and deobfuscated the final payload, progressively recovering its underlying functionality for further investigation.
+
+10. **Behavioral investigation:** Examined the recovered source code and traced relevant execution paths to identify persistence mechanisms, information collection, security evasion, cryptographic operations and command-and-control functionality.
+
+The investigation relied on static analysis and reverse engineering rather than executing the original malware.
 
 ## Identified Capabilities
 
@@ -182,20 +209,28 @@ The analysis also covered embedded configuration handling and certificate valida
 
 ## Methodology
 
-The investigation was conducted using static analysis techniques:
+The investigation was conducted using static analysis techniques and custom tooling.
 
-1. Identification of suspicious files.
-2. Deobfuscation of the initial loader.
-3. Extraction of embedded components.
-4. Decryption and decompression of embedded payloads.
-5. .NET assembly decompilation and source-code inspection.
-6. Analysis of persistence and security evasion mechanisms.
-7. Examination of information collection and surveillance functionality.
-8. Analysis of cryptographic implementation.
-9. Recovery and verification of embedded configuration.
-10. Documentation and responsible disclosure.
+The overall methodology consisted of:
 
-No connection was established with the identified C2 infrastructure.
+1. Identification of suspicious VBS and BAT files.
+2. Analysis of the initial execution chain.
+3. Deobfuscation of the initial batch loader using Python.
+4. Extraction of two embedded malware stages.
+5. Decompilation of Stage 1 using ILSpy.
+6. Decompilation of Stage 2 using ILSpy.
+7. Identification and replication of the AES-256 decryption routine to recover `payload.exe`.
+8. Extraction of additional binaries from the recovered payload using Python.
+9. Decompilation of extracted binaries using ILSpy.
+10. Deobfuscation and reconstruction of the final payload.
+11. Analysis of persistence and security evasion mechanisms.
+12. Examination of information collection and surveillance functionality.
+13. Analysis of cryptographic implementation.
+14. Recovery and verification of embedded configuration.
+15. Investigation of command-and-control functionality and communication protocols.
+16. Documentation of findings and responsible disclosure.
+
+All original malware components were analyzed through static techniques. No connection was established with the identified C2 infrastructure.
 
 ## Responsible Disclosure
 
@@ -236,7 +271,7 @@ All documented capabilities are based on analysis of the recovered code and conf
 
 This repository is intended exclusively for educational and defensive cybersecurity research.
 
-It does distribute the original malware samples or functional payloads.
+It does not distribute the original malware samples or functional payloads.
 
 Do not execute unknown malware samples on production systems. Any further dynamic analysis should be performed in a properly isolated laboratory environment.
 
@@ -245,5 +280,6 @@ Do not execute unknown malware samples on production systems. Any further dynami
 **Research Type:** Malware Analysis / Reverse Engineering / Threat Intelligence  
 **Platform:** Windows  
 **Primary Technology:** .NET / C#  
+**Analysis Tools:** Python / ILSpy  
 **Disclosure:** Reported to SK-CERT and domain abuse contacts  
 **Reference:** `JISKB-20261105-E4D1`
